@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bouncing Ball Animation</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bouncingBallCanvas" width="800" height="400"></canvas>
+
+  <script>
+    const canvas = document.getElementById("bouncingBallCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const ball = {
+      x: 50,
+      y: 50,
+      radius: 20,
+      color: "red",
+      speedX: 5,
+      speedY: 3,
+    };
+
+    function drawBall() {
+      const shadowOffsetX = 5; // Adjust the shadow offset as needed
+      const shadowOffsetY = 5;
+      const shadowBlur = 8;
+
+      // Adding shadow properties
+      ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+      ctx.shadowOffsetX = shadowOffsetX;
+      ctx.shadowOffsetY = shadowOffsetY;
+      ctx.shadowBlur = shadowBlur;
+
+      // Create a rainbow gradient
+      const gradient = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, ball.radius);
+      gradient.addColorStop(0, "red");
+      gradient.addColorStop(1 / 6, "orange");
+      gradient.addColorStop(2 / 6, "yellow");
+      gradient.addColorStop(3 / 6, "green");
+      gradient.addColorStop(4 / 6, "blue");
+      gradient.addColorStop(5 / 6, "indigo");
+      gradient.addColorStop(1, "violet");
+
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      ctx.closePath();
+
+      // Draw legs with shoes within the shadow
+      const legLength = ball.radius * 0.5;
+      const legWidth = ball.radius * 0.2;
+      const shoeLength = ball.radius * 0.2;
+      const shoeWidth = ball.radius * 0.3;
+
+      ctx.beginPath();
+      ctx.fillRect(ball.x - legWidth, ball.y + ball.radius, legWidth * 2, legLength);
+
+      // Draw shoes
+      ctx.fillRect(ball.x - legWidth - shoeWidth / 2, ball.y + ball.radius + legLength, shoeWidth, shoeLength);
+      ctx.fillRect(ball.x + legWidth - shoeWidth / 2, ball.y + ball.radius + legLength, shoeWidth, shoeLength);
+
+      ctx.fill();
+
+      // Draw arms with hands within the shadow
+      const armLength = ball.radius * 0.5;
+      const armWidth = ball.radius * 0.1;
+      const handRadius = ball.radius * 0.12;
+
+      // Draw left arm
+      ctx.beginPath();
+      ctx.fillRect(ball.x - ball.radius - armWidth, ball.y + ball.radius * 0.3, armLength, armWidth);
+      
+      // Draw left hand
+      ctx.arc(ball.x - ball.radius - armWidth - handRadius, ball.y + ball.radius * 0.3, handRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "red"; // You can adjust hand color
+      ctx.fill();
+      ctx.closePath();
+
+      // Draw right arm
+      ctx.beginPath();
+      ctx.fillRect(ball.x + ball.radius - armLength + armWidth, ball.y + ball.radius * 0.3, armLength, armWidth);
+
+      // Draw right hand
+      ctx.arc(ball.x + ball.radius + armWidth + handRadius, ball.y + ball.radius * 0.3, handRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "red"; // You can adjust hand color
+      ctx.fill();
+      ctx.closePath();
+
+      // Draw a smiley face within the shadow
+      const eyeRadius = ball.radius * 0.2;
+      const eyeOffsetX = ball.radius * 0.35;
+      const eyeOffsetY = ball.radius * 0.2;
+
+      ctx.beginPath();
+      ctx.arc(ball.x - eyeOffsetX, ball.y - eyeOffsetY, eyeRadius, 0, Math.PI * 2);
+      ctx.arc(ball.x + eyeOffsetX, ball.y - eyeOffsetY, eyeRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "black";
+      ctx.fill();
+
+      const smileRadius = ball.radius * 0.5;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y + ball.radius * 0.3, smileRadius, 0, Math.PI);
+      ctx.stroke();
+
+      // Reset shadow properties after drawing the ball
+      ctx.shadowColor = "transparent";
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.shadowBlur = 0;
+    }
+
+    function updateBallPosition() {
+      ball.x += ball.speedX;
+      ball.y += ball.speedY;
+
+      if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+        ball.speedX = -ball.speedX;
+      }
+
+      if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+        ball.speedY = -ball.speedY;
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBall();
+      updateBallPosition();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
